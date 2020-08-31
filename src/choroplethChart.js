@@ -3,6 +3,7 @@ dc_leaflet.choroplethChart = function(parent, chartGroup) {
 
     var _geojsonLayer = false;
     var _dataMap = [];
+    var _showLayerOnRender = true;
     var _layerControl = false;
 	var _layerName = false;
 
@@ -49,8 +50,9 @@ dc_leaflet.choroplethChart = function(parent, chartGroup) {
             onEachFeature: (_onEachFeature) ? _onEachFeature : processFeatures
         });
         if (_layerControl && _layerName)
-			_layerControl.addOverlay(_geojsonLayer, _layerName);
-		else
+            _layerControl.addOverlay(_geojsonLayer, _layerName);
+            
+		if (_showLayerOnRender)
 			_chart.map().addLayer(_geojsonLayer);
     };
 
@@ -90,6 +92,14 @@ dc_leaflet.choroplethChart = function(parent, chartGroup) {
             return _layerName;
         }
         _layerName = _;
+        return _chart;
+    };
+
+    _chart.showLayerOnRender = function(_) {
+        if (!arguments.length) {
+            return _showLayerOnRender;
+        }
+        _showLayerOnRender = _;
         return _chart;
     };
 
