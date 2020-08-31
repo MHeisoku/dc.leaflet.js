@@ -8,6 +8,7 @@ dc_leaflet.choroplethChart = function(parent, chartGroup) {
 	var _layerName = false;
 
     var _onEachFeature = false;
+    var _rebuildFeatures = false;
     var _geojson = false;
     var _renderPopup = true;
     var _brushOn = true;
@@ -45,13 +46,16 @@ dc_leaflet.choroplethChart = function(parent, chartGroup) {
     };
 
     _chart._postRender = function() {
+        if (_rebuildFeatures && _geojsonLayer)  //TODO: TEST TO SEE THAT THIS WORks
+            _chart.map().removeLayer(_geojsonLayer);
+
         _geojsonLayer=L.geoJson(_chart.geojson(), {
             style: _chart.featureStyle(),
             onEachFeature: (_onEachFeature) ? _onEachFeature : processFeatures
         });
         if (_layerControl && _layerName)
             _layerControl.addOverlay(_geojsonLayer, _layerName);
-            
+
 		if (_showLayerOnRender)
 			_chart.map().addLayer(_geojsonLayer);
     };
@@ -100,6 +104,14 @@ dc_leaflet.choroplethChart = function(parent, chartGroup) {
             return _showLayerOnRender;
         }
         _showLayerOnRender = _;
+        return _chart;
+    };
+
+    _chart.rebuildFeatures = function(_) {
+        if (!arguments.length) {
+            return _rebuildFeatures;
+        }
+        _rebuildFeatures = _;
         return _chart;
     };
 
